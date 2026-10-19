@@ -317,13 +317,29 @@ function compileLoop(el, list) {
     if (p === '') continue;
     const fr = snaps.map(sn => sn.get(p));
     if (fr.some(f => !f)) return false;                    // layer missing in some state -> use the regular engine
-    const changed = LOOP_PROPS.filter(k => fr.some(f => f[k] !== fr[0][k]));
+    let changed = LOOP_PROPS.filter(k => fr.some(f => f[k] !== fr[0][k]));
+    // left/top/width/height are layout properties: animating them re-lays-out every frame (it made Safari scroll at ~25 fps).
+    // When the box only moves and scales uniformly, express it as one transform instead: the element keeps its first-state box.
+    if (changed.some(k => k === 'left' || k === 'top' || k === 'width' || k === 'height')) {
+      const num = (v) => parseFloat(v) || 0, b0 = fr[0], w0 = num(b0.width), h0 = num(b0.height);
+      const ok = w0 > 0 && h0 > 0 && fr.every(f => { const sx = num(f.width) / w0, sy = num(f.height) / h0; return sx > 0 && Math.abs(sx - sy) < 0.02 * sx; }) && fr.every(f => parseMatrix(f.transform));
+      if (ok) {
+        const mul = (p, q) => [p[0] * q[0] + p[2] * q[1], p[1] * q[0] + p[3] * q[1], p[0] * q[2] + p[2] * q[3], p[1] * q[2] + p[3] * q[3], p[0] * q[4] + p[2] * q[5] + p[4], p[1] * q[4] + p[3] * q[5] + p[5]];
+        for (const f of fr) {
+          const sx = num(f.width) / w0, sy = num(f.height) / h0, T = parseMatrix(f.transform);
+          f.transform = mstr(mul(mul([1, 0, 0, 1, num(f.left) - num(b0.left), num(f.top) - num(b0.top)], T), [sx, 0, 0, sy, 0, 0]));
+          f.left = b0.left; f.top = b0.top; f.width = b0.width; f.height = b0.height;
+        }
+        changed = LOOP_PROPS.filter(k => fr.some(f => f[k] !== fr[0][k]));
+        if (!changed.includes('transform')) changed.push('transform');
+      }
+    }
     if (fr.some(f => f.backgroundImage !== fr[0].backgroundImage || f.display !== fr[0].display)) return false;
     if (!changed.length) continue;
     const k = states.length;
     const kf = fr.map((f, i) => { const o = { offset: i / k, easing: 'linear' }; changed.forEach(c => { o[c] = f[c] || (c === 'transform' ? 'none' : c === 'opacity' ? '1' : ''); }); return o; });
     const last = { offset: 1 }; changed.forEach(c => { last[c] = kf[0][c]; }); kf.push(last);
-    if (changed.includes('transform') || changed.includes('left') || changed.includes('top')) kf.forEach((f, i) => { const src = fr[i % k]; f.left = src.left || '0px'; f.top = src.top || '0px'; f.transform = src.transform || 'none'; });
+    if (changed.includes('left') || changed.includes('top')) kf.forEach((f, i) => { const src = fr[i % k]; f.left = src.left || '0px'; f.top = src.top || '0px'; f.transform = src.transform || 'none'; });
     if (changed.includes('transform')) {
       // exact component-wise blend between consecutive states (see matrix note above)
       const M = 8, out = [];
