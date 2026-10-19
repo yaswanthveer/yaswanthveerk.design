@@ -14,20 +14,20 @@ const C = { prev: [311 * K + EX, 468 * K + EY], mid: [775 * K + EX, 472 * K + EY
 const PAUSE = [[683, 360, 74, 225], [790, 360, 76, 225]].map(([x, y, w, h]) => [x * K + EX, y * K + EY, w * K, h * K]);
 
 // ---- state (module level = one per page load)
-const early = window.__aud;                                                  // created by the inline boot script in <head> (song 02, preload=auto)
+const early = window.__aud;                                                  // created by the inline boot script in <head> (song 01, preload=auto)
 const audio = early || new Audio(); if (!early) { audio.preload = 'metadata'; audio.setAttribute('playsinline', ''); try { audio.volume = VOL; } catch (_) { /* iOS */ } }
-// The site opens with the song whose file name starts with 02 (found by name, not position); then 03, 04 … and back to 01.
+// The site opens with the song whose file name starts with 01 (found by name, not position); then 02, 03 … and back to 01.
 const list = playlist.slice(); const bad = new Set();
-{ const SONG2 = /^\s*0*2(?!\d)/, nm = (x) => { try { return decodeURIComponent(x.src.split('/').pop()); } catch (_) { return x.src; } };
+{ const SONG2 = /^\s*0*1(?!\d)/, nm = (x) => { try { return decodeURIComponent(x.src.split('/').pop()); } catch (_) { return x.src; } };
   const k = list.findIndex((x) => SONG2.test(nm(x)));
-  if (k > 0) list.push(...list.splice(0, k)); else if (k < 0 && list.length) console.warn('[player] no song starting with "02" in public/music: starting with the first song'); }
+  if (k > 0) list.push(...list.splice(0, k)); else if (k < 0 && list.length) console.warn('[player] no song starting with "01" in public/music: starting with the first song'); }
 let idx = 0, playing = false, fadeRaf = 0, started = false, ours = 0;       // ours > 0: a pause / track change we started ourselves
 const subs = new Set(); const emit = () => subs.forEach((f) => f());
 const cur = () => list[idx];
 
 function loadTrack(i) {
   idx = ((i % list.length) + list.length) % list.length;
-  if (!audio.src || new URL(list[idx].src, location.href).href !== audio.src) { audio.src = list[idx].src; audio.load(); }   // song 02 is already loading from the head script
+  if (!audio.src || new URL(list[idx].src, location.href).href !== audio.src) { audio.src = list[idx].src; audio.load(); }   // song 01 is already loading from the head script
   if ('mediaSession' in navigator) { try { navigator.mediaSession.metadata = new MediaMetadata({ title: list[idx].title, artist: ARTIST, album: 'YASWANTH VEER.K — Portfolio' }); } catch (_) { /* old browser */ } }
   emit();
 }

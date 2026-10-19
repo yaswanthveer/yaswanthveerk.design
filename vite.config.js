@@ -62,11 +62,11 @@ const playlist = {
   },
   transform(code, id) { if (id.endsWith('src/data/playlist.json')) return { code: JSON.stringify(buildPlaylist(path.dirname(path.dirname(path.dirname(id))))), map: null }; return null; },
 };
-const SONG2 = /^\s*0*2(?!\d)/;                                              // "02-…", "02. …", "02 …" (not 020…)
+const SONG2 = /^\s*0*1(?!\d)/;                                              // "01-…", "01. …", "01 …" (not 010…)
 const nameOf = (src) => { try { return decodeURIComponent(src.split('/').pop()); } catch (_) { return src.split('/').pop(); } };
 const bootTag = (root) => {
   const pl = buildPlaylist(root); if (!pl.length) return null; const s2 = pl.find((x) => SONG2.test(nameOf(x.src))) || pl[0];
-  // Runs before anything else: creates the ONE shared audio element, preload="auto" for song 02, tries to play silently (volume 0).
+  // Runs before anything else: creates the ONE shared audio element, preload="auto" for song 01, tries to play silently (volume 0).
   // player/index.js adopts window.__aud, fades it in and takes over. Skipped when the visitor paused earlier in this session.
   const js = `(function(){try{if(sessionStorage.getItem('musicPaused')==='1')return}catch(e){}var a=new Audio();a.preload='auto';a.setAttribute('playsinline','');a.src=${JSON.stringify(s2.src)};try{a.volume=0}catch(e){}window.__aud=a;try{window.__audP=a.play().then(function(){return true},function(){return false})}catch(e){window.__audP=Promise.resolve(false)}})();`;
   return { tag: 'script', attrs: { id: 'music-boot' }, children: js, injectTo: 'head-prepend' };
