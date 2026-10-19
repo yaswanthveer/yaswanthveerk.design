@@ -37,7 +37,7 @@ function ramp(to, done, dur = FADE) {
   fadeRaf = requestAnimationFrame(step);
 }
 async function play() {
-  ss.set(false); booted = true;
+  ss.set(false); booted = true; audio.muted = false;
   if (!list.length) { console.warn('[player] no songs in public/music'); return; }
   if (!audio.src) loadTrack(idx);
   playing = true; emit(); try { audio.volume = 0; } catch (_) { /* iOS: read-only */ }
@@ -81,9 +81,23 @@ async function autostart() {
   if (!window.__audP) { try { audio.volume = 0; } catch (_) { /* iOS: read-only */ } }
   starting = true;
   try {
-    if (window.__audP) { const early = window.__audP; window.__audP = null; if (!(await early)) throw new Error('blocked'); } else await audio.play();
-    starting = false; booted = true; playing = true; emit(); ramp(VOL, null, FIRST_FADE); if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'playing'; return true; }
+    let silent = false;
+    if (window.__audP) { const early = window.__audP; window.__audP = null; const r = await early; if (!r) throw new Error('blocked'); silent = r === 'muted'; } else await audio.play();
+    starting = false; booted = true; playing = true; emit();
+    if (silent) armUnmute(); else ramp(VOL, null, FIRST_FADE); if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'playing'; return true; }
   catch (_) { starting = false; return false; }          // blocked: wait for a gesture
+}
+// The browser only allowed muted autoplay: the song is already running (silently) from the preloader; the first gesture turns the sound on.
+function armUnmute() {
+  const evs = ['pointerdown', 'pointerup', 'touchend', 'click', 'keydown'];
+  const on = (e) => {
+    if (!audio.muted) { off(); return; }
+    if (e.target && e.target.closest && e.target.closest('.hp-btn')) return;       // headphone buttons decide by themselves (play() unmutes)
+    if (!playing) { off(); return; }
+    window.__musicTapAt = performance.now(); audio.muted = false; try { audio.volume = 0; } catch (_) { /* iOS */ } ramp(VOL, null, FIRST_FADE); off();
+  };
+  const off = () => evs.forEach((t) => removeEventListener(t, on, { capture: true }));
+  evs.forEach((t) => addEventListener(t, on, { capture: true, passive: true }));
 }
 let armed = false;
 function armFirstGesture() {

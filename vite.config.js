@@ -68,7 +68,7 @@ const bootTag = (root) => {
   const pl = buildPlaylist(root); if (!pl.length) return null; const s2 = pl.find((x) => SONG2.test(nameOf(x.src))) || pl[0];
   // Runs before anything else: creates the ONE shared audio element, preload="auto" for song 01, tries to play silently (volume 0).
   // player/index.js adopts window.__aud, fades it in and takes over. Skipped when the visitor paused earlier in this session.
-  const js = `(function(){try{if(sessionStorage.getItem('musicPaused')==='1')return}catch(e){}var a=new Audio();a.preload='auto';a.setAttribute('playsinline','');a.src=${JSON.stringify(s2.src)};try{a.volume=0}catch(e){}window.__aud=a;try{window.__audP=a.play().then(function(){return true},function(){return false})}catch(e){window.__audP=Promise.resolve(false)}})();`;
+  const js = `(function(){try{if(sessionStorage.getItem('musicPaused')==='1')return}catch(e){}var a=new Audio();a.preload='auto';a.setAttribute('playsinline','');a.src=${JSON.stringify(s2.src)};try{a.volume=0}catch(e){}window.__aud=a;try{window.__audP=a.play().then(function(){return true},function(){a.muted=true;return a.play().then(function(){return 'muted'},function(){a.muted=false;return false})})}catch(e){window.__audP=Promise.resolve(false)}})();`;
   return { tag: 'script', attrs: { id: 'music-boot' }, children: js, injectTo: 'head-prepend' };
 };
 function write(root) { try { fs.writeFileSync(path.join(root, 'src/data/playlist.json'), JSON.stringify(buildPlaylist(root), null, 1)); } catch (_) { /* ignore */ } }
