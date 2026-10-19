@@ -2,7 +2,7 @@
 export const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 export const mod = (n, m) => ((n % m) + m) % m;
 export const lerp = (a, b, t) => a + (b - a) * t;
-const STATIC = /[?&]static\b/.test(location.search);       // ?static freezes all idle motion (used for pixel comparisons)
+const STATIC = /[?&]static\b/.test(location.search) || !!window.__lite;       // ?static freezes all idle motion (used for pixel comparisons)
 export const reduced = () => STATIC || matchMedia('(prefers-reduced-motion: reduce)').matches;
 export const px = (n) => n.toFixed(2) + 'px';
 

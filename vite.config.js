@@ -51,6 +51,10 @@ const playlist = {
   configResolved(c) { rootDir = c.root; },
   transformIndexHtml() {
     const t = bootTag(rootDir || process.cwd()); const tags = t ? [t] : [];
+    // crash guard: if the previous load never reached "ready" (the phone's browser killed the tab), this load starts in lite mode
+    // (no intro, no idle animation loops) and stays lite until you open the site with ?lite=0. ?lite forces it.
+    const lite = "(function(){var L=false;try{var ls=window.localStorage,t=+ls.getItem('bootAt')||0;if(/[?&]lite=0/.test(location.search)){ls.removeItem('lite');ls.removeItem('bootAt')}else if(t&&Date.now()-t<180000)ls.setItem('lite','1');L=ls.getItem('lite')==='1';ls.setItem('bootAt',String(Date.now()))}catch(e){}if(/[?&]lite(&|=1|$)/.test(location.search))L=true;window.__lite=L})();";
+    tags.unshift({ tag: 'script', attrs: { id: 'lite-guard' }, children: lite, injectTo: 'head-prepend' });
     // link-preview cover: absolute URL (crawlers need one). On Vercel the production domain is provided at build time.
     const host = process.env.SITE_URL || (process.env.VERCEL_PROJECT_PRODUCTION_URL ? 'https://' + process.env.VERCEL_PROJECT_PRODUCTION_URL : 'https://yaswanthveerk-design.vercel.app');
     const m = (k, v, attr = 'property') => ({ tag: 'meta', attrs: { [attr]: k, content: v }, injectTo: 'head' });

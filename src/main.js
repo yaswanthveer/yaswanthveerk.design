@@ -193,4 +193,5 @@ addEventListener('resize', () => { current?.stage._fit(); overlays.forEach(o => 
   if (intro) await Promise.all([plPlay(async () => { await shown; return current; }), shown]); else await shown;
   if (bar) { bar.style.opacity = '0'; setTimeout(() => bar.remove(), 400); }
   document.body.dataset.ready = '1';
+  try { localStorage.removeItem('bootAt'); } catch (_) { /* private mode */ }
 })();

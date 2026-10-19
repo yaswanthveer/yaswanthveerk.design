@@ -12,6 +12,8 @@ export const lazy = { on: false, pending: new Set(), reg: new Set(), live: new S
 // Phones (esp. iOS Safari) kill a tab that holds too many decoded images ("A problem repeatedly occurred"). On small screens only the images near
 // the viewport are kept decoded; the rest fall back to their tiny blurred preview and come back when scrolled near.
 export const MOBILE = (typeof matchMedia === 'function' && matchMedia('(max-width: 900px)').matches) || /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+// touch screens never hover, so the hover-only "glint" overlays (masked gradients on ~25 large layers) are not built there: far fewer offscreen surfaces
+export const NOHOVER = typeof matchMedia === 'function' && matchMedia('(hover: none)').matches;
 export function trimFar() {
   if (!MOBILE) return; const vh = innerHeight;
   for (const el of lazy.live) {
@@ -377,6 +379,7 @@ export function buildNode(n, opts = {}) {
     let pre = null;
     for (const c of n.ch) {
       if (c.mk) { container = buildMaskWrapper(el, c); pre = minv(matOf(c)); continue; }
+      if (NOHOVER && c.nm === 'glint (masked)') continue;
       const ce = buildNode(c, pre ? { ...opts, pre } : { ...opts, pre: undefined });
       container.appendChild(ce);
     }

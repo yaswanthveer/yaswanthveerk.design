@@ -218,7 +218,7 @@ function crossfadeBg(el, from, dur, ease) {
 }
 
 // ---------- interaction binding -------------------------------------------------------------
-const STATIC = new URLSearchParams(location.search).has('static');
+const STATIC = new URLSearchParams(location.search).has('static') || !!window.__lite;   // lite = crash-recovery mode: no idle loops / timers
 const POINTER = new Set(['ON_HOVER', 'ON_CLICK', 'DRAG', 'MOUSE_ENTER', 'MOUSE_LEAVE', 'ON_PRESS', 'MOUSE_DOWN', 'MOUSE_UP']);
 function triggersOf(el) { return ixOf(el._n).filter(i => i && i.trigger); }
 
