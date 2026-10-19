@@ -90,7 +90,7 @@ function armFirstGesture() {
   if (armed) return; armed = true;
   const evs = ['pointerdown', 'pointerup', 'touchend', 'click', 'keydown'];
   const onGesture = (e) => {
-    if (e.target && e.target.closest && e.target.closest('.hp-btn')) return;        // a press on the headphones decides by itself: no double toggle
+    if (e.target && e.target.closest && e.target.closest('.hp-btn, .pl-music')) return;        // a press on the headphones decides by itself: no double toggle
     if (ss.get() === '1' || booted) { off(); return; }
     window.__musicTapAt = performance.now();
     autostart().then((ok) => { if (ok) off(); });   // (a call while one is in flight returns false and keeps listening)
@@ -154,4 +154,18 @@ export function mountHeadphones(view) {
   };
   const off = player.subscribe(() => { if (!layer.isConnected) { off(); stopPulse(); return; } render(); });
   render();
+}
+
+// ---- music controls on the preloader: prev / play-pause / next + title, live while the intro is on screen (html.pl-on) ----------
+if (document.documentElement.classList.contains('pl-on') && list.length) {
+  const bar = document.createElement('div'); bar.className = 'pl-music'; bar.setAttribute('role', 'group'); bar.setAttribute('aria-label', 'Music');
+  const ic = { prev: '<path d="M6 5v14M19 5v14L8 12z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>', next: '<path d="M18 5v14M5 5v14l11-7z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>', play: '<path d="M7 4.5v15l12-7.5z" fill="currentColor"/>', pause: '<path d="M6 4h4v16H6zM14 4h4v16h-4z" fill="currentColor"/>' };
+  const btn = (label, svg, fn) => { const b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-label', label); b.innerHTML = `<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">${svg}</svg>`; b.addEventListener('click', (e) => { e.stopPropagation(); fn(); }); return b; };
+  const bp = btn('Previous song', ic.prev, prev), bm = btn('Pause', ic.pause, toggle), bn = btn('Next song', ic.next, next);
+  const t = document.createElement('span'); t.className = 'pl-music-t';
+  bar.append(bp, bm, bn, t); document.body.appendChild(bar);
+  const r = () => { bm.innerHTML = `<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">${playing ? ic.pause : ic.play}</svg>`; bm.setAttribute('aria-label', playing ? 'Pause' : 'Play'); t.textContent = player.title; };
+  const off = player.subscribe(() => { if (!bar.isConnected) { off(); return; } r(); }); r();
+  const mo = new MutationObserver(() => { if (!document.documentElement.classList.contains('pl-on')) { mo.disconnect(); off(); bar.remove(); } });
+  mo.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 }
