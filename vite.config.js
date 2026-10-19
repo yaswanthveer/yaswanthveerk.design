@@ -49,7 +49,13 @@ const playlist = {
     for (const ev of ['add', 'unlink', 'change']) server.watcher.on(ev, touch);
   },
   configResolved(c) { rootDir = c.root; },
-  transformIndexHtml() { const t = bootTag(rootDir || process.cwd()); return t ? [t] : []; },
+  transformIndexHtml() {
+    const t = bootTag(rootDir || process.cwd()); const tags = t ? [t] : [];
+    // link-preview cover: absolute URL (crawlers need one). On Vercel the production domain is provided at build time.
+    const host = process.env.SITE_URL || (process.env.VERCEL_PROJECT_PRODUCTION_URL ? 'https://' + process.env.VERCEL_PROJECT_PRODUCTION_URL : 'https://yaswanthveerk-design.vercel.app');
+    const m = (k, v, attr = 'property') => ({ tag: 'meta', attrs: { [attr]: k, content: v }, injectTo: 'head' });
+    return tags.concat([m('og:image', host + '/og-cover.jpg?v=1'), m('og:image:width', '1200'), m('og:image:height', '630'), m('og:image:alt', 'yaswanthveer.k'), m('og:type', 'website'), m('og:url', host + '/'), m('twitter:card', 'summary_large_image', 'name'), m('twitter:title', 'yaswanthveer.k', 'name'), m('twitter:image', host + '/og-cover.jpg?v=1', 'name')]);
+  },
   transform(code, id) { if (id.endsWith('src/data/playlist.json')) return { code: JSON.stringify(buildPlaylist(path.dirname(path.dirname(path.dirname(id))))), map: null }; return null; },
 };
 const SONG2 = /^\s*0*2(?!\d)/;                                              // "02-…", "02. …", "02 …" (not 020…)
