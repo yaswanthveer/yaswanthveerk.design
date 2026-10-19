@@ -8,7 +8,18 @@ export const lqip = {};   // ref -> tiny blurred preview (data URI), shown insta
 // 1. the first screens load first (near-viewport check, works in every engine incl. Safari)
 // 2. everything else is fetched in the background, a few at a time
 // 3. an image is only applied once it is DECODED, so it never pops in half-painted or flashes while scrolling
-export const lazy = { on: false, pending: new Set(), reg: new Set() };
+export const lazy = { on: false, pending: new Set(), reg: new Set(), live: new Set() };
+// Phones (esp. iOS Safari) kill a tab that holds too many decoded images ("A problem repeatedly occurred"). On small screens only the images near
+// the viewport are kept decoded; the rest fall back to their tiny blurred preview and come back when scrolled near.
+export const MOBILE = (typeof matchMedia === 'function' && matchMedia('(max-width: 900px)').matches) || /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+export function trimFar() {
+  if (!MOBILE) return; const vh = innerHeight;
+  for (const el of lazy.live) {
+    if (!el.isConnected) { lazy.live.delete(el); continue; }
+    const r = el.getBoundingClientRect(); if (r.width === 0 && r.height === 0) continue;
+    if (r.bottom < -3 * vh || r.top > 4 * vh) { el.style.backgroundImage = el._bgPh; el._bgFull = el._bgApplied; el._bgLoading = null; lazy.reg.add(el); lazy.live.delete(el); }
+  }
+}
 const decodedUrls = new Map();
 const urlsOf = (img) => [...img.matchAll(/url\(([^)]+)\)/g)].map(m => m[1].replace(/^["']|["']$/g, ''));
 export function predecode(url) {
@@ -18,7 +29,7 @@ export function predecode(url) {
 }
 function applyBg(el) {
   const f = el._bgFull; if (!f) return;
-  el._bgFull = null; lazy.reg.delete(el);
+  el._bgFull = null; lazy.reg.delete(el); if (MOBILE && el._bgPh) { el._bgApplied = f; lazy.live.add(el); }
   el.style.backgroundImage = f.img; el.style.backgroundSize = f.size; el.style.backgroundPosition = f.pos; el.style.backgroundRepeat = f.rep;
   if (f.blend) el.style.backgroundBlendMode = f.blend;
 }
@@ -64,6 +75,7 @@ function nearest() {
     const r = el.getBoundingClientRect();
     if (r.width === 0 && r.height === 0) continue;
     const d = r.bottom < 0 ? -r.bottom : r.top > vh ? r.top - vh : 0;
+    if (MOBILE && d > 1.5 * vh) continue;                                   // phones: only what is near the screen
     if (d < bd) { bd = d; best = el; if (d === 0) break; }
   }
   return best;
@@ -177,8 +189,8 @@ export function applyFills(el, fills, w, h) {
   if (lazy.on && hasUrl) {
     // keep layer count/order, defer the actual image fetch
     el._bgFull = full;
-    const preview = (x) => { const m = /\/img\/([0-9a-f]{40})\./.exec(x); const u = m && lqip[m[1]]; return u ? `url(${u})` : 'linear-gradient(transparent,transparent)'; };
-    el.style.backgroundImage = o.img.map(x => (x.startsWith('url(') ? preview(x) : x)).join(',');
+    const preview = (x) => { const m = /\/img\/(?:m\/)?([0-9a-f]{40})\./.exec(x); const u = m && lqip[m[1]]; return u ? `url(${u})` : 'linear-gradient(transparent,transparent)'; };
+    el.style.backgroundImage = o.img.map(x => (x.startsWith('url(') ? preview(x) : x)).join(','); el._bgPh = el.style.backgroundImage;
     el.style.backgroundSize = full.size; el.style.backgroundPosition = full.pos; el.style.backgroundRepeat = full.rep;
     if (full.blend) el.style.backgroundBlendMode = full.blend;
     lazy.reg.add(el);

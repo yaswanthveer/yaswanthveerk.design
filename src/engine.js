@@ -1,5 +1,5 @@
 // Figma prototype runtime: variants (CHANGE_TO + Smart Animate), navigate, overlay, back, close, url, timers, keys, drag.
-import { buildNode, images, lqip, forceBg } from './render.js';
+import { buildNode, images, lqip, forceBg, MOBILE } from './render.js';
 import LINKS from './links.config.js';
 
 const cache = new Map();      // topId -> {root, index:Map(id->node)}
@@ -11,6 +11,7 @@ let FILMS = {};
 export async function initData() {
   const [m, ix, im, fl, lq] = await Promise.all(['meta', 'interactions', 'images', 'films', 'lqip'].map(n => fetch(`/data/${n}.json`).then(r => r.json())));
   Object.assign(meta, m); ixTable = ix; Object.assign(images, im); Object.assign(lqip, lq);
+  if (MOBILE) for (const k in images) images[k] = 'm/' + images[k];     // phone-sized copies (see tools/mobile_images.py)
   FILMS = Object.fromEntries(Object.entries(fl).map(([k, v]) => [norm(k), v]));
   buildSetIndex();
 }

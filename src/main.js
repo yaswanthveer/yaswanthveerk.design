@@ -1,4 +1,4 @@
-import { buildNode, lazy, lazyIdle, loadNear, drainBackground, loadBg, predecode, waitNear } from './render.js';
+import { MOBILE, trimFar, buildNode, lazy, lazyIdle, loadNear, drainBackground, loadBg, predecode, waitNear } from './render.js';
 import { mountTools } from './tools/mount.js';
 import { mountHeadphones } from './player/index.js';
 import { active as plActive, play as plPlay } from './preloader/index.js';
@@ -76,9 +76,9 @@ async function show(id, { push = true, transition } = {}) {
   current = view;
   if (id === '1:26') mountHeadphones(view);
   if (id === '1:7') mountTools(view);
-  if (id === '1:7') import('./native/projects/ProjectDetail.js').then((mod) => (window.requestIdleCallback || setTimeout)(mod.warm, { timeout: 3000 })).catch(() => {});   // warm the pop-up code and first screens
+  if (id === '1:7' && !MOBILE) import('./native/projects/ProjectDetail.js').then((mod) => (window.requestIdleCallback || setTimeout)(mod.warm, { timeout: 3000 })).catch(() => {});   // warm the pop-up code and first screens
   drainBackground();
-  if (!view.native) setTimeout(() => prefetchLinked(view.root).catch(() => {}), 800);
+  if (!view.native && !MOBILE) setTimeout(() => prefetchLinked(view.root).catch(() => {}), 800);
   document.body.style.background = bgOf(view.root);
   history.length = Math.min(history.length, 50);
 }
@@ -175,7 +175,7 @@ function closeOverlay(from) {
 hooks.close = (el) => closeOverlay(el);
 
 let scrollT = 0;
-addEventListener('scroll', () => { if (scrollT) return; scrollT = setTimeout(() => { scrollT = 0; settleUntil = performance.now() + 5000; tick(); loadNear(1400); drainBackground(); }, 120); }, { passive: true });
+addEventListener('scroll', () => { if (scrollT) return; scrollT = setTimeout(() => { scrollT = 0; trimFar(); settleUntil = performance.now() + 5000; tick(); loadNear(1400); drainBackground(); }, 120); }, { passive: true });
 // Idle loops are paused while far off-screen, and while newly visible images are still being painted (Safari decodes
 // images on the same thread that renders hundreds of animated layers, so a spinning ring makes every image slow)
 let settleUntil = performance.now() + 6000;
