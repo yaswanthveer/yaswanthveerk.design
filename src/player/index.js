@@ -88,7 +88,7 @@ async function autostart() {
 let armed = false;
 function armFirstGesture() {
   if (armed) return; armed = true;
-  const evs = ['pointerdown', 'touchend', 'click', 'keydown'];
+  const evs = ['pointerdown', 'pointerup', 'touchend', 'click', 'keydown'];
   const onGesture = (e) => {
     if (e.target && e.target.closest && e.target.closest('.hp-btn')) return;        // a press on the headphones decides by itself: no double toggle
     if (ss.get() === '1' || booted) { off(); return; }

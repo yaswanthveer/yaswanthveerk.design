@@ -52,7 +52,14 @@ async function settle(max = 2500) {
   await Promise.race([Promise.all([document.fonts.ready, waitNear(250, max)]), new Promise(r => setTimeout(r, max))]);
 }
 
-async function show(id, { push = true, transition } = {}) {
+// one navigation at a time (a second tap during a transition used to leave a stale page behind); the latest request wins
+let busy = false, pendingNav = null;
+async function show(id, opts = {}) {
+  if (busy) { pendingNav = [id, opts]; return; }
+  busy = true;
+  try { await showNow(id, opts); } finally { busy = false; if (pendingNav) { const [i, o] = pendingNav; pendingNav = null; show(i, o); } }
+}
+async function showNow(id, { push = true, transition, url = true } = {}) {
   const T0 = performance.now(); const mark = (k) => { if (window.__prof) (window.__prof.nav ||= []).push([id, k, Math.round(performance.now() - T0)]); };
   const view = await makeView(id); mark('built');
   // variant data (can be many MB) is only needed once something swaps: load it in the background, then re-arm loops
@@ -74,6 +81,7 @@ async function show(id, { push = true, transition } = {}) {
     old.stage.animate([{ opacity: 1 }, { opacity: 0 }], { duration: dur, easing: ease }).onfinish = () => { old.destroy && old.destroy(); old.stage.remove(); };
   }
   current = view;
+  if (url && old) { try { window.history.pushState({ site: id }, '', '#' + id.replace(':', '_')); } catch (_) { /* sandboxed */ } }   // the browser Back button walks back through the pages
   if (id === '1:26') mountHeadphones(view);
   if (id === '1:7') mountTools(view);
   if (id === '1:7' && !MOBILE) import('./native/projects/ProjectDetail.js').then((mod) => (window.requestIdleCallback || setTimeout)(mod.warm, { timeout: 3000 })).catch(() => {});   // warm the pop-up code and first screens
@@ -134,7 +142,14 @@ hooks.project = async (el) => {
 };
 
 hooks.navigate = (dest, action) => { if (dest === current.id) return; return show(dest, { transition: action.transition }); };
-hooks.back = () => { if (overlays.length) return closeOverlay(); const prev = history.pop(); if (prev) show(prev, { push: false }); };
+hooks.back = () => { if (overlays.length) return closeOverlay(); const prev = history.pop(); if (prev) show(prev, { push: false, url: false }); };
+// browser Back / Forward (and manual hash edits)
+function route() {
+  const st = window.history.state; if (st && st.pd) return;              // a project pop-up owns this history entry
+  const id = location.hash.slice(1).replace('_', ':') || HOME;
+  if (current && id !== current.id && meta.pages[id]) { if (overlays.length) closeOverlay(); show(id, { push: false, url: false }); }
+}
+addEventListener('popstate', route); addEventListener('hashchange', route);
 
 // ---- overlays -------------------------------------------------------------------------------
 hooks.overlay = async (dest, action) => {
