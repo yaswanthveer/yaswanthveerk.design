@@ -1,0 +1,480 @@
+[
+ {
+  "id": "clentr",
+  "name": "Clentr",
+  "match": [
+   "clentr"
+  ],
+  "oneLiner": "A software engineering studio for founders: mobile apps, web platforms, desktop tools and AI systems.",
+  "role": "Founder",
+  "type": "Company website",
+  "year": "",
+  "problem": "Most first products fail before users ever see them.",
+  "whatIDid": [
+   "Founded and run Clentr, a design and engineering studio.",
+   "Services listed on the site: Product Launch, AI & Automation, Dedicated Product Team.",
+   "The site presents the studio's own products and client work as a Finder-style folder."
+  ],
+  "outcome": "",
+  "stack": [
+   "Next.js",
+   "Vercel",
+   "Supabase"
+  ],
+  "liveUrl": "https://www.clentr.com/",
+  "card": "/projects/clentr/hero",
+  "screens": [
+   {
+    "src": "/projects/clentr/hero",
+    "w": 2880,
+    "h": 1800,
+    "alt": "Clentr home page hero",
+    "caption": "Home — hero"
+   },
+   {
+    "src": "/projects/clentr/work",
+    "w": 2880,
+    "h": 1800,
+    "alt": "Clentr work shown as a Finder window",
+    "caption": "Work, shown as a Finder window"
+   },
+   {
+    "src": "/projects/clentr/services",
+    "w": 2880,
+    "h": 1800,
+    "alt": "Clentr services: Product Launch, AI & Automation, Dedicated Product Team",
+    "caption": "Services"
+   },
+   {
+    "src": "/projects/clentr/process",
+    "w": 2880,
+    "h": 1800,
+    "alt": "Clentr process: Discover, Design, Build, Launch",
+    "caption": "Process"
+   }
+  ],
+  "figmaUrl": ""
+ },
+ {
+  "id": "dealsamor",
+  "name": "DealsAmor",
+  "match": [
+   "dealsamor"
+  ],
+  "oneLiner": "Verified local offers from businesses near you, with a customer app, creator flow and business tools.",
+  "role": "UI/UX & product designer",
+  "type": "Client project: web & mobile",
+  "year": "",
+  "problem": "",
+  "whatIDid": [
+   "Designed the product in Figma across a customer mobile app, a creator flow, a web business console, a tablet counter app, a franchise and storefront console, and internal admin and support consoles.",
+   "Designed a web deals flow: home, search, category browse, offer detail and storefront pages.",
+   "Covered edge states such as empty wallet, nothing nearby and claim limits."
+  ],
+  "outcome": "",
+  "stack": [],
+  "liveUrl": "",
+  "card": "/projects/dealsamor/welcome",
+  "screens": [
+   {
+    "src": "/projects/dealsamor/welcome",
+    "w": 780,
+    "h": 1688,
+    "alt": "DealsAmor welcome screen",
+    "caption": "Welcome"
+   },
+   {
+    "src": "/projects/dealsamor/interests",
+    "w": 780,
+    "h": 1688,
+    "alt": "DealsAmor interests screen",
+    "caption": "Interests"
+   },
+   {
+    "src": "/projects/dealsamor/reminders",
+    "w": 780,
+    "h": 1688,
+    "alt": "DealsAmor reminders screen",
+    "caption": "Reminders"
+   },
+   {
+    "src": "/projects/dealsamor/filters",
+    "w": 780,
+    "h": 1688,
+    "alt": "DealsAmor search filters",
+    "caption": "Search filters"
+   },
+   {
+    "src": "/projects/dealsamor/wallet",
+    "w": 780,
+    "h": 1688,
+    "alt": "DealsAmor empty wallet state",
+    "caption": "Wallet, empty state"
+   }
+  ],
+  "figmaUrl": ""
+ },
+ {
+  "id": "rebase",
+  "name": "Rebase",
+  "match": [
+   "rebase"
+  ],
+  "oneLiner": "A 6-minute daily posture coach for desk workers: an iOS app with a guide who talks you through a 4-week plan.",
+  "role": "UI/UX & product designer",
+  "type": "iOS app + landing page",
+  "year": "",
+  "problem": "Most stretching apps give you a picture and a timer. Rebase gives you a coach.",
+  "whatIDid": [
+   "Designed the 1440px landing page in Figma.",
+   "Built the app component library in Figma: 40 icons, buttons, icon buttons, pills, tab bar, option rows, day states and a speech bubble."
+  ],
+  "outcome": "",
+  "stack": [
+   "Next.js",
+   "Vercel"
+  ],
+  "liveUrl": "https://rebase-landing-sigma.vercel.app/",
+  "card": "/projects/rebase/hero",
+  "screens": [
+   {
+    "src": "/projects/rebase/hero",
+    "w": 2880,
+    "h": 1800,
+    "alt": "Rebase landing page hero",
+    "caption": "Landing page — hero"
+   },
+   {
+    "src": "/projects/rebase/how",
+    "w": 2880,
+    "h": 1800,
+    "alt": "Rebase: from first scan to day 28 in four steps",
+    "caption": "How it works"
+   },
+   {
+    "src": "/projects/rebase/coaches",
+    "w": 2880,
+    "h": 1800,
+    "alt": "Rebase: choose your coach",
+    "caption": "Choose your coach"
+   },
+   {
+    "src": "/projects/rebase/progress",
+    "w": 2880,
+    "h": 1800,
+    "alt": "Rebase progress comparison, day 0 to day 28",
+    "caption": "Progress"
+   },
+   {
+    "src": "/projects/rebase/features",
+    "w": 2880,
+    "h": 2256,
+    "alt": "Rebase features section, Figma design",
+    "caption": "Features — design in Figma"
+   }
+  ],
+  "figmaUrl": ""
+ },
+ {
+  "id": "byze",
+  "name": "BYZE",
+  "match": [
+   "byze"
+  ],
+  "oneLiner": "B2B procurement for construction and home interiors: one requirement, one workflow, one conversation.",
+  "role": "UI/UX & product designer",
+  "type": "Client project: web application",
+  "year": "",
+  "problem": "Procurement wasn't built for this many conversations. Requirements, supplier updates, quotations and approvals scatter across WhatsApp, phone calls and supplier fragments.",
+  "whatIDid": [
+   "Designed the buyer app in Figma: dashboard, RFQs, RFQ creation, vendors, quotations, messages and settings.",
+   "Designed sign in, sign up, OTP and vendor invite flows, plus a seller workspace and quotation, an admin panel and a WhatsApp deep-link mobile screen.",
+   "Designed the marketing homepage."
+  ],
+  "outcome": "",
+  "stack": [],
+  "liveUrl": "",
+  "card": "/projects/byze/hero",
+  "screens": [
+   {
+    "src": "/projects/byze/hero",
+    "w": 2880,
+    "h": 780,
+    "alt": "BYZE marketing homepage hero",
+    "caption": "Marketing homepage"
+   },
+   {
+    "src": "/projects/byze/signin",
+    "w": 2880,
+    "h": 2080,
+    "alt": "BYZE sign in with mobile number",
+    "caption": "Sign in"
+   },
+   {
+    "src": "/projects/byze/rfq",
+    "w": 2880,
+    "h": 2692,
+    "alt": "BYZE create new RFQ form",
+    "caption": "Create a new RFQ"
+   },
+   {
+    "src": "/projects/byze/dashboard",
+    "w": 2880,
+    "h": 2096,
+    "alt": "BYZE buyer dashboard",
+    "caption": "Buyer dashboard"
+   }
+  ],
+  "figmaUrl": ""
+ },
+ {
+  "id": "rythu",
+  "name": "The Rythu",
+  "match": [
+   "therythu",
+   "rythu"
+  ],
+  "oneLiner": "Naturally ripened mangoes, directly from Indian farmers.",
+  "role": "UI/UX & product designer",
+  "type": "Website",
+  "year": "",
+  "problem": "Chemical ripening strips a mango of its flavour; natural ripening lets sweetness, aroma and texture develop at nature's pace.",
+  "whatIDid": [],
+  "outcome": "",
+  "stack": [
+   "Next.js",
+   "Vercel"
+  ],
+  "liveUrl": "https://the-rythu.vercel.app/",
+  "card": "/projects/rythu/hero",
+  "screens": [
+   {
+    "src": "/projects/rythu/hero",
+    "w": 2880,
+    "h": 1800,
+    "alt": "The Rythu home page hero",
+    "caption": "Home — hero"
+   },
+   {
+    "src": "/projects/rythu/difference",
+    "w": 2880,
+    "h": 1800,
+    "alt": "Why naturally ripened matters",
+    "caption": "Why naturally ripened matters"
+   },
+   {
+    "src": "/projects/rythu/journey",
+    "w": 2880,
+    "h": 1800,
+    "alt": "The journey of one mango",
+    "caption": "The journey of one mango"
+   },
+   {
+    "src": "/projects/rythu/heritage",
+    "w": 2880,
+    "h": 1800,
+    "alt": "Corporate gifting, weddings, festivals, export",
+    "caption": "Gifting and bulk orders"
+   }
+  ],
+  "figmaUrl": ""
+ },
+ {
+  "id": "ziro",
+  "name": "Ziro",
+  "match": [
+   "ziroai",
+   "ziro"
+  ],
+  "oneLiner": "An AI-powered career platform for Indian engineering students: curriculum, real projects and placements.",
+  "role": "UI/UX & product designer",
+  "type": "Web app",
+  "year": "",
+  "problem": "",
+  "whatIDid": [],
+  "outcome": "",
+  "stack": [
+   "React",
+   "Vite",
+   "Tailwind CSS",
+   "Vercel"
+  ],
+  "liveUrl": "https://ziropro.vercel.app/",
+  "card": "/projects/ziro/hero",
+  "screens": [
+   {
+    "src": "/projects/ziro/hero",
+    "w": 2880,
+    "h": 1290,
+    "alt": "Ziro home page hero",
+    "caption": "Home — hero"
+   },
+   {
+    "src": "/projects/ziro/features",
+    "w": 2880,
+    "h": 1800,
+    "alt": "Everything you need to get hired",
+    "caption": "Features"
+   },
+   {
+    "src": "/projects/ziro/path",
+    "w": 2880,
+    "h": 1800,
+    "alt": "Decide, learn, build, prove, apply, grow",
+    "caption": "Six steps, one path"
+   }
+  ],
+  "figmaUrl": ""
+ },
+ {
+  "id": "btc",
+  "name": "Breaking the Code",
+  "match": [
+   "breakingthecode"
+  ],
+  "oneLiner": "Custom-built academic projects that clear reviews, survive viva and upgrade your resume.",
+  "role": "UI/UX & product designer",
+  "type": "Website",
+  "year": "",
+  "problem": "",
+  "whatIDid": [],
+  "outcome": "",
+  "stack": [
+   "Next.js",
+   "Vercel"
+  ],
+  "liveUrl": "https://breakingthecode-projects.vercel.app/",
+  "card": "/projects/btc/hero",
+  "screens": [
+   {
+    "src": "/projects/btc/hero",
+    "w": 2880,
+    "h": 1800,
+    "alt": "Breaking the Code hero",
+    "caption": "Home — hero"
+   },
+   {
+    "src": "/projects/btc/segmentation",
+    "w": 2880,
+    "h": 1800,
+    "alt": "Project segmentation: web, mobile, AI",
+    "caption": "Project segmentation"
+   },
+   {
+    "src": "/projects/btc/standards",
+    "w": 2880,
+    "h": 1300,
+    "alt": "Built to your evaluation standards",
+    "caption": "Built to university standards"
+   }
+  ],
+  "figmaUrl": ""
+ },
+ {
+  "id": "shecodes",
+  "name": "SheCodes.AI",
+  "match": [
+   "shecodesai",
+   "shecodes"
+  ],
+  "oneLiner": "An AI-powered life companion for health, confidence and career comeback, built with IBM watsonx.",
+  "role": "UI/UX & product designer",
+  "type": "Web app",
+  "year": "",
+  "problem": "",
+  "whatIDid": [],
+  "outcome": "",
+  "stack": [
+   "Next.js",
+   "Vercel",
+   "IBM watsonx"
+  ],
+  "liveUrl": "https://shecodes-ai.vercel.app/",
+  "card": "/projects/shecodes/hero",
+  "screens": [
+   {
+    "src": "/projects/shecodes/hero",
+    "w": 2880,
+    "h": 1800,
+    "alt": "SheCodes.AI hero",
+    "caption": "Home — hero"
+   },
+   {
+    "src": "/projects/shecodes/modules",
+    "w": 2880,
+    "h": 1800,
+    "alt": "Six AI modules",
+    "caption": "Six AI modules"
+   },
+   {
+    "src": "/projects/shecodes/chapters",
+    "w": 2880,
+    "h": 1800,
+    "alt": "Which chapter are you in",
+    "caption": "Which chapter are you in?"
+   },
+   {
+    "src": "/projects/shecodes/learn",
+    "w": 2880,
+    "h": 1800,
+    "alt": "Explain like I am a mum",
+    "caption": "Learning hub"
+   }
+  ],
+  "figmaUrl": ""
+ },
+ {
+  "id": "portfolio",
+  "name": "Portfolio Website",
+  "match": [
+   "portfoliowebsite",
+   "portfolio"
+  ],
+  "oneLiner": "This site: my design portfolio, designed in Figma and built as a live, interactive website.",
+  "role": "UI/UX & product designer",
+  "type": "Website",
+  "year": "",
+  "problem": "",
+  "whatIDid": [
+   "Designed every page in Figma: About me, Projects, My hustle, Ideologies and Books, Movies & Films.",
+   "Built the site from that Figma file, with a native Films, Music and Books page."
+  ],
+  "outcome": "",
+  "stack": [
+   "Vite"
+  ],
+  "liveUrl": "",
+  "card": "/projects/portfolio/about",
+  "screens": [
+   {
+    "src": "/projects/portfolio/about",
+    "w": 2880,
+    "h": 1800,
+    "alt": "About me page of this portfolio",
+    "caption": "About me"
+   },
+   {
+    "src": "/projects/portfolio/projects",
+    "w": 2880,
+    "h": 1800,
+    "alt": "Projects page of this portfolio",
+    "caption": "Projects"
+   },
+   {
+    "src": "/projects/portfolio/films",
+    "w": 2880,
+    "h": 1800,
+    "alt": "Disc wall on the Books, Movies & Films page",
+    "caption": "Films and music"
+   },
+   {
+    "src": "/projects/portfolio/ideologies",
+    "w": 2880,
+    "h": 1800,
+    "alt": "My ideologies page of this portfolio",
+    "caption": "My ideologies"
+   }
+  ],
+  "figmaUrl": ""
+ }
+]

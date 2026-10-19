@@ -1,0 +1,44 @@
+{
+ "popcorn": {
+  "x": 225.0,
+  "y": 681.0,
+  "w": 241.0,
+  "h": 361.0,
+  "src": "/img/films/popcorn.webp",
+  "iw": 560,
+  "ih": 840
+ },
+ "chair": {
+  "x": 624.0,
+  "y": 2336.0,
+  "w": 246.0,
+  "h": 487.0,
+  "src": "/img/films/chair.webp",
+  "iw": 560,
+  "ih": 1110
+ },
+ "standing": {
+  "x": 1190.0,
+  "y": 384.0,
+  "w": 233.0,
+  "h": 464.0,
+  "src": "/img/films/standing.webp",
+  "iw": 560,
+  "ih": 1117
+ },
+ "tiger": {
+  "x": 1334.0,
+  "y": 11.0,
+  "w": 93.73999786376953,
+  "h": 93.73999786376953,
+  "src": "/img/films/tiger.webp",
+  "iw": 288,
+  "ih": 288
+ },
+ "text": {
+  "ringTag": "Books, Movies & Films · YASWANTH VEER.K\nFincher · Scorsese · Vanga · Snyder · RGV · Kurosawa · Cameron · Nolan",
+  "musicHint": "· hover · click to play · drag or ← → to move along",
+  "booksHint": "Favorite books · hover a spine to turn it · click to take it off the shelf",
+  "wallHint": "Tap a disc to open · ← → to move"
+ }
+}

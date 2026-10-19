@@ -1,0 +1,66 @@
+import fs from 'node:fs';
+import path from 'node:path';
+
+// figmaUrl lives in src/data/projects.json for me, but must never reach the public bundle (client work).
+const stripProjects = {
+  name: 'strip-internal-project-fields', enforce: 'pre',
+  transform(code, id) {
+    if (!id.endsWith('src/data/projects.json')) return null;
+    const data = JSON.parse(code).map(({ figmaUrl, ...rest }) => rest);
+    return { code: JSON.stringify(data), map: null };
+  },
+};
+
+// Playlist: public/music/*.mp3 -> src/data/playlist.json, ordered by file name, title = ID3 title or the cleaned file name.
+// Regenerated at dev start, on every request of the JSON (so a refresh picks up new files), when files change, and at build.
+function id3Title(buf) {
+  try {
+    if (buf.toString('latin1', 0, 3) !== 'ID3') return '';
+    const ver = buf[3], size = ((buf[6] & 127) << 21) | ((buf[7] & 127) << 14) | ((buf[8] & 127) << 7) | (buf[9] & 127);
+    let p = 10; const end = Math.min(buf.length, 10 + size);
+    while (p + 10 <= end) {
+      const id = buf.toString('latin1', p, p + 4); if (!/^[A-Z0-9]{4}$/.test(id)) break;
+      const sz = ver === 4 ? ((buf[p + 4] & 127) << 21) | ((buf[p + 5] & 127) << 14) | ((buf[p + 6] & 127) << 7) | (buf[p + 7] & 127) : buf.readUInt32BE(p + 4);
+      if (id === 'TIT2') {
+        const enc = buf[p + 10], body = buf.subarray(p + 11, p + 10 + sz);
+        let t = enc === 1 ? body.toString('utf16le') : enc === 2 ? Buffer.from(body).swap16().toString('utf16le') : enc === 3 ? body.toString('utf8') : body.toString('latin1');
+        return t.replace(/^﻿/, '').replace(/\0/g, '').trim();
+      }
+      p += 10 + sz;
+    }
+  } catch (_) { /* unreadable tag: fall back to the file name */ }
+  return '';
+}
+const clean = (f) => f.replace(/\.[^.]+$/, '').replace(/^\s*\d+\s*[-_.)\s]+/, '').replace(/\s_\s/g, ' ').replace(/_+/g, ' ').replace(/(\S)-(\S)/g, '$1 $2').replace(/\(\s+/g, '(').replace(/\s+\)/g, ')').replace(/\s+/g, ' ').trim() || f;
+function buildPlaylist(root) {
+  const dir = path.join(root, 'public/music'); let files = [];
+  try { files = fs.readdirSync(dir).filter((f) => /\.(mp3|m4a|aac|ogg|wav)$/i.test(f)); } catch (_) { /* no folder yet */ }
+  files.sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }));
+  return files.map((f) => { let t = ''; try { const fd = fs.openSync(path.join(dir, f), 'r'); const b = Buffer.alloc(65536); const n = fs.readSync(fd, b, 0, b.length, 0); fs.closeSync(fd); t = id3Title(b.subarray(0, n)); } catch (_) { /* skip */ } return { src: '/music/' + encodeURIComponent(f), title: t || clean(f) }; });
+}
+let rootDir = '';
+const playlist = {
+  name: 'music-playlist', enforce: 'pre',
+  buildStart() { this.__root = process.cwd(); write(this.__root); },
+  configureServer(server) {
+    const root = server.config.root; write(root);
+    const dir = path.join(root, 'public/music'); fs.mkdirSync(dir, { recursive: true }); server.watcher.add(dir);
+    const touch = (f) => { if (f.includes(path.sep + 'music' + path.sep)) { write(root); const m = server.moduleGraph.getModuleById(path.join(root, 'src/data/playlist.json')); if (m) server.moduleGraph.invalidateModule(m); } };
+    for (const ev of ['add', 'unlink', 'change']) server.watcher.on(ev, touch);
+  },
+  configResolved(c) { rootDir = c.root; },
+  transformIndexHtml() { const t = bootTag(rootDir || process.cwd()); return t ? [t] : []; },
+  transform(code, id) { if (id.endsWith('src/data/playlist.json')) return { code: JSON.stringify(buildPlaylist(path.dirname(path.dirname(path.dirname(id))))), map: null }; return null; },
+};
+const SONG2 = /^\s*0*2(?!\d)/;                                              // "02-…", "02. …", "02 …" (not 020…)
+const nameOf = (src) => { try { return decodeURIComponent(src.split('/').pop()); } catch (_) { return src.split('/').pop(); } };
+const bootTag = (root) => {
+  const pl = buildPlaylist(root); if (!pl.length) return null; const s2 = pl.find((x) => SONG2.test(nameOf(x.src))) || pl[0];
+  // Runs before anything else: creates the ONE shared audio element, preload="auto" for song 02, tries to play silently (volume 0).
+  // player/index.js adopts window.__aud, fades it in and takes over. Skipped when the visitor paused earlier in this session.
+  const js = `(function(){try{if(sessionStorage.getItem('musicPaused')==='1')return}catch(e){}var a=new Audio();a.preload='auto';a.setAttribute('playsinline','');a.src=${JSON.stringify(s2.src)};try{a.volume=0}catch(e){}window.__aud=a;try{window.__audP=a.play().then(function(){return true},function(){return false})}catch(e){window.__audP=Promise.resolve(false)}})();`;
+  return { tag: 'script', attrs: { id: 'music-boot' }, children: js, injectTo: 'head-prepend' };
+};
+function write(root) { try { fs.writeFileSync(path.join(root, 'src/data/playlist.json'), JSON.stringify(buildPlaylist(root), null, 1)); } catch (_) { /* ignore */ } }
+
+export default { plugins: [stripProjects, playlist] };

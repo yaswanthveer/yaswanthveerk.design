@@ -1,0 +1,37 @@
+/* ProjectDetail: the macOS "Info" window from the Figma project card (frame 1:95), grown into a case-study sheet.
+   --pd-display is the heading font; the Figma card itself uses Inter Bold. */
+.pd-scrim { --pd-display: 'Inter', system-ui, sans-serif; position: fixed; inset: 0; z-index: 500; display: flex; align-items: center; justify-content: center; padding: clamp(12px, 3vh, 36px) clamp(10px, 3vw, 36px);
+  background: rgba(8, 8, 9, .5); -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); opacity: 0; font-family: 'Inter', system-ui, sans-serif; }
+.pd-win { position: relative; width: min(1040px, 100%); max-height: 100%; display: flex; flex-direction: column; background: #1c1c1e; border: 1px solid #3a3a3c; border-radius: 14px; overflow: hidden; color: #fff;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, .5); transform-origin: 0 0; outline: none; }
+.pd-bar { flex: none; height: 44px; display: flex; align-items: center; gap: 8px; padding: 0 16px; background: #2c2c2e; border-bottom: 1px solid #1c1c1e; position: relative; }
+.pd-bar i { width: 12px; height: 12px; border-radius: 50%; display: block; border: 0; padding: 0; }
+.pd-bar .c { background: #ff5f57; cursor: pointer; } .pd-bar .m { background: #febc2e; } .pd-bar .z { background: #28c840; }
+.pd-bar .c:hover::after { content: '×'; display: block; font: 600 11px/12px Inter; color: #4d0000; text-align: center; }
+.pd-bar span { position: absolute; left: 0; right: 0; text-align: center; font: 500 13px/16px Inter; color: #9a9aa0; pointer-events: none; }
+.pd-body { overflow-y: auto; overscroll-behavior: contain; padding: clamp(18px, 3vw, 34px); display: flex; flex-direction: column; gap: clamp(18px, 2.6vw, 28px); }
+.pd-head { display: flex; gap: 18px; align-items: flex-start; }
+.pd-folder { flex: none; width: 56px; height: 48px; margin-top: 4px; }
+.pd-titles { min-width: 0; flex: 1; }
+.pd-titles h2 { margin: 0; font: 700 clamp(30px, 4.6vw, 46px)/1.05 var(--pd-display); letter-spacing: -.01em; color: #fff; }
+.pd-one { margin: 8px 0 0; font: 400 clamp(14px, 1.5vw, 17px)/1.4 Inter; color: #9a9aa0; max-width: 62ch; }
+.pd-meta { margin: 10px 0 0; font: 500 13px/18px Inter; color: #8e8e93; display: flex; flex-wrap: wrap; gap: 4px 0; }
+.pd-meta b { font-weight: 500; color: #d1d1d6; } .pd-meta s { text-decoration: none; margin: 0 8px; opacity: .6; }
+.pd-visit { flex: none; align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 16px; border-radius: 999px; background: #fff; color: #1c1c1e; font: 600 13px/1 Inter; text-decoration: none; transition: transform .25s cubic-bezier(.22, 1, .36, 1), opacity .2s; }
+.pd-visit:hover { transform: translateY(-1px); } .pd-visit:focus-visible { outline: 2px solid #42a5f5; outline-offset: 2px; }
+.pd-strip { --h: clamp(200px, 38vh, 340px); display: flex; gap: 12px; overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; padding: 12px; margin: 0; list-style: none; background: #232325; border: 1px dashed #48484a; border-radius: 10px; scrollbar-width: thin; scrollbar-color: #48484a transparent; -webkit-overflow-scrolling: touch; }
+.pd-strip li { flex: none; height: var(--h); margin: 0; position: relative; }
+.pd-strip img { display: block; height: 100%; width: auto; max-width: none; border-radius: 6px; background: #2c2c2e; box-shadow: 0 0 0 1px rgba(255, 255, 255, .06); }
+.pd-strip figcaption { position: absolute; left: 8px; bottom: 8px; padding: 3px 8px; border-radius: 999px; font: 500 11px/14px Inter; color: #d1d1d6; background: rgba(28, 28, 30, .72); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); opacity: 0; transition: opacity .2s; pointer-events: none; }
+.pd-strip li:hover figcaption { opacity: 1; }
+.pd-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px 28px; }
+.pd-cols h3 { margin: 0 0 8px; font: 600 11px/14px Inter; letter-spacing: .14em; text-transform: uppercase; color: #8e8e93; }
+.pd-cols p, .pd-cols li { margin: 0; font: 400 14px/1.55 Inter; color: #d1d1d6; }
+.pd-cols ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+.pd-cols li { padding-left: 14px; position: relative; } .pd-cols li::before { content: ''; position: absolute; left: 0; top: .62em; width: 5px; height: 5px; border-radius: 50%; background: #42a5f5; }
+.pd-chips { display: flex; flex-wrap: wrap; gap: 6px; } .pd-chips span { font: 500 12px/1 Inter; padding: 6px 10px; border-radius: 999px; background: #2c2c2e; color: #d1d1d6; border: 1px solid #3a3a3c; }
+.pd-foot { flex: none; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 24px; padding: 14px clamp(18px, 3vw, 34px); border-top: 1px solid #2c2c2e; font: 400 13px/16px Inter; color: #8e8e93; }
+.pd-foot b { font-weight: 400; color: #fff; margin: 0 22px 0 6px; } .pd-foot .kv { display: flex; flex-wrap: wrap; }
+.pd-foot nav { display: flex; gap: 18px; } .pd-foot a { color: #d1d1d6; text-decoration: none; } .pd-foot a:hover { color: #fff; text-decoration: underline; } .pd-foot a:focus-visible { outline: 2px solid #42a5f5; outline-offset: 3px; border-radius: 2px; }
+@media (max-width: 640px) { .pd-head { flex-wrap: wrap; } .pd-visit { margin-left: 74px; } }
+@media (prefers-reduced-motion: reduce) { .pd-visit { transition: none; } }

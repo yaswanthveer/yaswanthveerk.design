@@ -1,0 +1,15 @@
+html,body{margin:0;padding:0;background:#0c0b09;overflow-x:hidden}
+body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:geometricPrecision}
+#app{position:relative;width:100%}
+.fig,.fig *{box-sizing:border-box}
+.fig{position:absolute;left:0;top:0;transform-origin:0 0;pointer-events:none}
+.n{position:absolute;transform-origin:0 0;pointer-events:none}
+.n.hit{pointer-events:auto;cursor:pointer}
+.n.t{white-space:pre-wrap;font-kerning:normal}
+.n svg{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}
+.stage{position:relative;width:100%;overflow:hidden}
+.layer{position:absolute;left:0;top:0;width:100%}
+
+#loadbar{position:fixed;left:0;top:0;height:3px;width:100%;z-index:10000;background:linear-gradient(90deg,transparent,#fff,transparent);background-size:40% 100%;background-repeat:no-repeat;animation:lb 1.1s ease-in-out infinite;transition:opacity .35s;pointer-events:none;mix-blend-mode:difference}
+@keyframes lb{from{background-position:-40% 0}to{background-position:140% 0}}
+.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}

@@ -1,0 +1,11 @@
+.hp-layer { position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
+.hp-icons { position: absolute; left: 0; top: 0; width: 100%; height: calc(4811 * var(--s, 1) * 1px); }
+.hp-i { transition: opacity .2s linear; }
+.hp-layer .hp-play { opacity: 1; } .hp-layer .hp-pause { opacity: 0; }
+.hp-layer.on .hp-play { opacity: 0; } .hp-layer.on .hp-pause { opacity: 1; }
+.hp-btn { position: absolute; pointer-events: auto; padding: 0; margin: 0; border: 0; background: transparent; cursor: pointer; border-radius: 50%; -webkit-tap-highlight-color: transparent; touch-action: manipulation; transition: transform .18s cubic-bezier(.22, 1, .36, 1); }
+.hp-btn.press { transform: scale(.92); }
+.hp-btn:focus-visible { outline: 2px solid #131312; outline-offset: -2px; }
+/* no empty page area next to the headphones: a small white pill right under them */
+.hp-title { position: absolute; padding: 2px 8px; border-radius: 999px; background: #fff; color: #131312; font: 400 9px/1.3 'Geist Mono', ui-monospace, monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 0; transition: opacity .3s linear; pointer-events: none; box-shadow: 0 0 0 1px rgba(19, 19, 18, .14); }
+.hp-layer.on .hp-title { opacity: 1; }
