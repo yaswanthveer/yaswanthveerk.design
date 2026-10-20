@@ -60,7 +60,6 @@ export async function play(getView) {
   const swallow = (e) => { e.stopPropagation(); e.preventDefault(); };
   const skip = (e) => {
     if (finished) return;
-    if (window.__musicTapAt && performance.now() - window.__musicTapAt < 600) return;     // this tap only started the music; the next one skips
     if (e && e.cancelable && (e.type === 'wheel' || e.type === 'touchmove')) e.preventDefault();
     if (e && e.type === 'keydown') { if (e.metaKey || e.ctrlKey || e.altKey) return; e.preventDefault(); }          // the key press only skips; it must not scroll or act on the page
     if (e && (e.type === 'pointerdown' || e.type === 'touchstart')) {                                                  // ... and neither must the click that skips

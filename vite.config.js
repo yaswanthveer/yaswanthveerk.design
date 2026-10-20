@@ -50,7 +50,7 @@ const playlist = {
   },
   configResolved(c) { rootDir = c.root; },
   transformIndexHtml() {
-    const t = bootTag(rootDir || process.cwd()); const tags = t ? [t] : [];
+    const tags = [];
     // crash guard: if the previous load never reached "ready" (the phone's browser killed the tab), this load starts in lite mode
     // (no intro, no idle animation loops) and stays lite until you open the site with ?lite=0. ?lite forces it.
     const lite = "(function(){var L=false;try{var ls=window.localStorage,t=+ls.getItem('bootAt')||0;if(/[?&]lite=0/.test(location.search)){ls.removeItem('lite');ls.removeItem('bootAt')}else if(t&&Date.now()-t<180000)ls.setItem('lite','1');L=ls.getItem('lite')==='1';ls.setItem('bootAt',String(Date.now()))}catch(e){}if(/[?&]lite(&|=1|$)/.test(location.search))L=true;window.__lite=L})();";
@@ -61,15 +61,6 @@ const playlist = {
     return tags.concat([m('og:image', host + '/og-cover.jpg?v=1'), m('og:image:width', '1200'), m('og:image:height', '630'), m('og:image:alt', 'yaswanthveer.k'), m('og:type', 'website'), m('og:url', host + '/'), m('twitter:card', 'summary_large_image', 'name'), m('twitter:title', 'yaswanthveer.k', 'name'), m('twitter:image', host + '/og-cover.jpg?v=1', 'name')]);
   },
   transform(code, id) { if (id.endsWith('src/data/playlist.json')) return { code: JSON.stringify(buildPlaylist(path.dirname(path.dirname(path.dirname(id))))), map: null }; return null; },
-};
-const SONG2 = /^\s*0*1(?!\d)/;                                              // "01-…", "01. …", "01 …" (not 010…)
-const nameOf = (src) => { try { return decodeURIComponent(src.split('/').pop()); } catch (_) { return src.split('/').pop(); } };
-const bootTag = (root) => {
-  const pl = buildPlaylist(root); if (!pl.length) return null; const s2 = pl.find((x) => SONG2.test(nameOf(x.src))) || pl[0];
-  // Runs before anything else: creates the ONE shared audio element, preload="auto" for song 01, tries to play silently (volume 0).
-  // player/index.js adopts window.__aud, fades it in and takes over. Skipped when the visitor paused earlier in this session.
-  const js = `(function(){try{if(sessionStorage.getItem('musicPaused')==='1')return}catch(e){}var a=new Audio();a.preload='auto';a.setAttribute('playsinline','');a.src=${JSON.stringify(s2.src)};try{a.volume=0}catch(e){}window.__aud=a;try{window.__audP=a.play().then(function(){return true},function(){a.muted=true;return a.play().then(function(){return 'muted'},function(){a.muted=false;return false})})}catch(e){window.__audP=Promise.resolve(false)}})();`;
-  return { tag: 'script', attrs: { id: 'music-boot' }, children: js, injectTo: 'head-prepend' };
 };
 function write(root) { try { fs.writeFileSync(path.join(root, 'src/data/playlist.json'), JSON.stringify(buildPlaylist(root), null, 1)); } catch (_) { /* ignore */ } }
 

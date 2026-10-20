@@ -4,7 +4,7 @@ import playlist from '../data/playlist.json';
 // One shared <audio> for the whole site. Buttons live in a layer on top of the About-page headphones (Figma image 25 "glint": the
 // three icons). Music starts only from a press. The audio element is created once, so it keeps playing across navigation.
 const ARTIST = 'YASWANTH VEER.K';
-const FADE = 300, VOL = 0.6, FIRST_FADE = 1500, KEY = 'musicPaused';
+const FADE = 300, VOL = 0.6, KEY = 'musicPaused';
 const ss = { get: () => { try { return sessionStorage.getItem(KEY); } catch (_) { return null; } }, set: (v) => { try { v ? sessionStorage.setItem(KEY, '1') : sessionStorage.removeItem(KEY); } catch (_) { /* private mode */ } } };
 const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -14,8 +14,7 @@ const C = { prev: [311 * K + EX, 468 * K + EY], mid: [775 * K + EX, 472 * K + EY
 const PAUSE = [[683, 360, 74, 225], [790, 360, 76, 225]].map(([x, y, w, h]) => [x * K + EX, y * K + EY, w * K, h * K]);
 
 // ---- state (module level = one per page load)
-const early = window.__aud;                                                  // created by the inline boot script in <head> (song 01, preload=auto)
-const audio = early || new Audio(); if (!early) { audio.preload = 'metadata'; audio.setAttribute('playsinline', ''); try { audio.volume = VOL; } catch (_) { /* iOS */ } }
+const audio = new Audio(); audio.preload = 'metadata'; audio.setAttribute('playsinline', ''); try { audio.volume = VOL; } catch (_) { /* iOS */ }
 // The site opens with the song whose file name starts with 01 (found by name, not position); then 02, 03 … and back to 01.
 const list = playlist.slice(); const bad = new Set();
 { const SONG2 = /^\s*0*1(?!\d)/, nm = (x) => { try { return decodeURIComponent(x.src.split('/').pop()); } catch (_) { return x.src; } };
@@ -37,7 +36,7 @@ function ramp(to, done, dur = FADE) {
   fadeRaf = requestAnimationFrame(step);
 }
 async function play() {
-  ss.set(false); booted = true; audio.muted = false;
+  ss.set(false); audio.muted = false;
   if (!list.length) { console.warn('[player] no songs in public/music'); return; }
   if (!audio.src) loadTrack(idx);
   playing = true; emit(); try { audio.volume = 0; } catch (_) { /* iOS: read-only */ }
@@ -57,11 +56,10 @@ function go(i) {                                                     // keep the
 const next = () => go(idx + 1);
 const prev = () => { if (audio.currentTime > 3) audio.currentTime = 0; else go(idx - 1); };
 audio.addEventListener('ended', () => { go(idx + 1); });
-// the browser paused us (autoplay policy, an interruption): show the truth and wait for the next gesture
+// the browser paused us (an interruption): show the truth and wait for the visitor to press play again
 audio.addEventListener('pause', () => {
   if (!playing || ours || audio.ended) return;
-  playing = false; booted = false; emit(); if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'paused';
-  if (ss.get() !== '1') armFirstGesture();
+  playing = false; emit(); if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'paused';
 });
 audio.addEventListener('error', () => {                              // broken / missing file: skip it quietly
   if (!audio.src) return; console.warn('[player] skipping unreadable file', list[idx] && list[idx].src); bad.add(idx);
@@ -73,47 +71,7 @@ if ('mediaSession' in navigator) {
 }
 if (list.length) loadTrack(0);
 
-// ---- open with music: try now; if the browser blocks it, start on the visitor's first interaction (no banner, no console noise)
-let booted = false, starting = false;
-async function autostart() {
-  if (starting) return false;
-  if (booted || playing || ss.get() === '1' || !list.length) return true;
-  if (!window.__audP) { try { audio.volume = 0; } catch (_) { /* iOS: read-only */ } }
-  starting = true;
-  try {
-    let silent = false;
-    if (window.__audP) { const early = window.__audP; window.__audP = null; const r = await early; if (!r) throw new Error('blocked'); silent = r === 'muted'; } else await audio.play();
-    starting = false; booted = true; playing = true; emit();
-    if (silent) armUnmute(); else ramp(VOL, null, FIRST_FADE); if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'playing'; return true; }
-  catch (_) { starting = false; return false; }          // blocked: wait for a gesture
-}
-// The browser only allowed muted autoplay: the song is already running (silently) from the preloader; the first gesture turns the sound on.
-function armUnmute() {
-  const evs = ['pointerdown', 'pointerup', 'touchend', 'click', 'keydown'];
-  const on = (e) => {
-    if (!audio.muted) { off(); return; }
-    if (e.target && e.target.closest && e.target.closest('.hp-btn')) return;       // headphone buttons decide by themselves (play() unmutes)
-    if (!playing) { off(); return; }
-    window.__musicTapAt = performance.now(); audio.muted = false; try { audio.volume = 0; } catch (_) { /* iOS */ } ramp(VOL, null, FIRST_FADE); off();
-  };
-  const off = () => evs.forEach((t) => removeEventListener(t, on, { capture: true }));
-  evs.forEach((t) => addEventListener(t, on, { capture: true, passive: true }));
-}
-let armed = false;
-function armFirstGesture() {
-  if (armed) return; armed = true;
-  const evs = ['pointerdown', 'pointerup', 'touchend', 'click', 'keydown'];
-  const onGesture = (e) => {
-    if (e.target && e.target.closest && e.target.closest('.hp-btn')) return;        // a press on the headphones decides by itself: no double toggle
-    if (ss.get() === '1' || booted) { off(); return; }
-    window.__musicTapAt = performance.now();
-    autostart().then((ok) => { if (ok) off(); });   // (a call while one is in flight returns false and keeps listening)
-  };
-  const off = () => { armed = false; evs.forEach((t) => removeEventListener(t, onGesture, { capture: true })); };
-  evs.forEach((t) => addEventListener(t, onGesture, { capture: true, passive: true }));
-}
-if (list.length && ss.get() !== '1') autostart().then((ok) => { if (!ok) armFirstGesture(); });
-
+// The site opens paused: music starts only when the visitor presses play.
 export const player = { play, pause, toggle, next, prev, audio, get playing() { return playing; }, get title() { return cur() ? cur().title : ''; }, get count() { return list.length; }, subscribe: (f) => { subs.add(f); return () => subs.delete(f); } };
 window.__player = player;                                            // test hook
 
