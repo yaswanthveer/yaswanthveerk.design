@@ -81,7 +81,6 @@ export async function play(getView) {
     if (letters) letters.forEach((l) => { l.style.visibility = ''; });
     if (document.getElementById('pl')) removeOverlay();
     document.documentElement.classList.remove('pl-on', 'pl-lock');
-    try { sessionStorage.setItem('plSeen', '1'); } catch (_) { /* private mode */ }
     window.__pl.on = false; window.__pl.done = performance.now(); window.__pl.how = how;
   };
 
