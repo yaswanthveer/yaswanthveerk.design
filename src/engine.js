@@ -417,6 +417,19 @@ function onDown(el, e) {
   addEventListener('pointermove', mv); addEventListener('pointerup', up);
 }
 
+// ---------- resume download -------------------------------------------------------------------
+// The floating resume paper ("resume (floating)", 155:640 on the projects page) has no click action in Figma,
+// so clicking it anywhere (paper or its hover zone, in any float-N variant) downloads the PDF from /public.
+const RESUME_ID = '155:640', RESUME_PDF = '/yaswanthveerk_resume.pdf';
+const isResume = (el) => { for (let n = el; n && n !== document; n = n.parentElement) { const id = n.dataset?.id; if (id && (id === RESUME_ID || id.startsWith('I' + RESUME_ID + ';'))) return n; } return null; };
+document.addEventListener('click', (e) => {
+  if (!isResume(e.target)) return;
+  const a = document.createElement('a');
+  a.href = RESUME_PDF; a.download = 'Yaswanth-Veer-K-Resume.pdf'; a.rel = 'noopener';
+  document.body.appendChild(a); a.click(); a.remove();
+});
+document.addEventListener('pointerover', (e) => { const r = isResume(e.target); if (r) r.style.cursor = 'pointer'; });
+
 addEventListener('keydown', (e) => {
   document.querySelectorAll('[data-kd]').forEach(el => {
     if (!el.isConnected || !el._n) return;
