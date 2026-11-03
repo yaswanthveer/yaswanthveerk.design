@@ -5,6 +5,8 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-r
 .fig{position:absolute;left:0;top:0;transform-origin:0 0;pointer-events:none}
 .n{position:absolute;transform-origin:0 0;pointer-events:none}
 .n.hit{pointer-events:auto;cursor:pointer}
+/* floating resume: the paper itself (not just the fixed-size hover zone) takes clicks, so every point of it downloads the PDF even while it floats, tilts or grows */
+[data-id="155:640"]>.n{pointer-events:auto;cursor:pointer}
 .n.t{white-space:pre-wrap;font-kerning:normal}
 .n svg{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}
 .stage{position:relative;width:100%;overflow:hidden}
