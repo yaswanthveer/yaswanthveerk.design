@@ -56,10 +56,11 @@ const playlist = {
     // counts as a crash. ?lite=0 clears it, ?lite forces it. The old sticky 'lite' key is removed.
     const lite = "(function(){var L=false;try{var ls=window.localStorage,n=Date.now(),t=+ls.getItem('bootAt')||0;ls.removeItem('lite');if(/[?&]lite=0/.test(location.search)){ls.removeItem('liteUntil');ls.removeItem('bootAt');t=0}if(t&&n-t<180000)ls.setItem('liteUntil',String(n+864e5));L=(+ls.getItem('liteUntil')||0)>n;ls.setItem('bootAt',String(n));addEventListener('pagehide',function(){try{ls.removeItem('bootAt')}catch(e){}})}catch(e){}if(/[?&]lite(&|=1|$)/.test(location.search))L=true;window.__lite=L})();";
     tags.unshift({ tag: 'script', attrs: { id: 'lite-guard' }, children: lite, injectTo: 'head-prepend' });
-    // link-preview cover: absolute URL (crawlers need one). On Vercel the production domain is provided at build time.
-    const host = process.env.SITE_URL || (process.env.VERCEL_PROJECT_PRODUCTION_URL ? 'https://' + process.env.VERCEL_PROJECT_PRODUCTION_URL : 'https://yaswanthveerk-design.vercel.app');
+    // canonical link + link-preview cover: absolute URLs (crawlers need them).
+    // canonical domain: the bare domain 308-redirects to www, so www is the URL crawlers should index. SITE_URL overrides it.
+    const host = (process.env.SITE_URL || 'https://www.yaswanthveerk.com').replace(/\/+$/, '');
     const m = (k, v, attr = 'property') => ({ tag: 'meta', attrs: { [attr]: k, content: v }, injectTo: 'head' });
-    return tags.concat([m('og:image', host + '/og-cover.jpg?v=1'), m('og:image:width', '1200'), m('og:image:height', '630'), m('og:image:alt', 'yaswanthveer.k'), m('og:type', 'website'), m('og:url', host + '/'), m('twitter:card', 'summary_large_image', 'name'), m('twitter:title', 'yaswanthveer.k', 'name'), m('twitter:image', host + '/og-cover.jpg?v=1', 'name')]);
+    return tags.concat([{ tag: 'link', attrs: { rel: 'canonical', href: host + '/' }, injectTo: 'head' }, m('og:image', host + '/og-cover.jpg?v=1'), m('og:image:width', '1200'), m('og:image:height', '630'), m('og:image:alt', 'yaswanthveer.k'), m('og:type', 'website'), m('og:url', host + '/'), m('twitter:card', 'summary_large_image', 'name'), m('twitter:title', 'yaswanthveer.k', 'name'), m('twitter:image', host + '/og-cover.jpg?v=1', 'name')]);
   },
   transform(code, id) { if (id.endsWith('src/data/playlist.json')) return { code: JSON.stringify(buildPlaylist(path.dirname(path.dirname(path.dirname(id))))), map: null }; return null; },
 };
