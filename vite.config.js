@@ -64,7 +64,7 @@ const playlist = {
     const ld = { '@context': 'https://schema.org', '@graph': [
       { '@type': 'Person', '@id': host + '/#person', name: 'Yaswanth Veer K', alternateName: ['yaswanthveer.k', 'YASWANTH VEER.K', 'Yaswanth Veer'], url: host + '/', image: host + '/og-cover.jpg',
         jobTitle: 'Designer', description: 'Designer, illustrator, artist and hybrid athlete based in Bangalore.', address: { '@type': 'PostalAddress', addressLocality: 'Bangalore', addressCountry: 'IN' },
-        sameAs: ['https://www.instagram.com/yaswanthveer.k/', 'https://x.com/YaswanthVeer1'] },
+        sameAs: ['https://www.linkedin.com/in/yaswanthveer-k/', 'https://www.instagram.com/yaswanthveer.k_/', 'https://x.com/YaswanthVeer1'] },
       { '@type': 'WebSite', '@id': host + '/#website', name: 'yaswanthveer.k', url: host + '/', publisher: { '@id': host + '/#person' } },
     ] };
     return tags.concat([{ tag: 'link', attrs: { rel: 'canonical', href: host + '/' }, injectTo: 'head' }, { tag: 'script', attrs: { type: 'application/ld+json' }, children: JSON.stringify(ld), injectTo: 'head' }, m('og:image', host + '/og-cover.jpg?v=1'), m('og:image:width', '1200'), m('og:image:height', '630'), m('og:image:alt', 'yaswanthveer.k'), m('og:type', 'website'), m('og:url', host + '/'), m('twitter:card', 'summary_large_image', 'name'), m('twitter:title', 'yaswanthveer.k', 'name'), m('twitter:image', host + '/og-cover.jpg?v=1', 'name')]);

@@ -3,6 +3,7 @@
 export default {
   "https://YOUR-EDITS-LINK": '',
   "https://YOUR-SITE.notion.site": '',
-  "https://www.linkedin.com/in/YOUR-HANDLE": '',
+  "https://www.linkedin.com/in/YOUR-HANDLE": 'https://www.linkedin.com/in/yaswanthveer-k/',
+  "https://www.instagram.com/yaswanthveer.k/": 'https://www.instagram.com/yaswanthveer.k_/',
   "mailto:hello@yourdomain.com?subject=Let%27s%20work%20together": 'mailto:yaswanthveer1233@gmail.com?subject=Let%27s%20work%20together',
 };

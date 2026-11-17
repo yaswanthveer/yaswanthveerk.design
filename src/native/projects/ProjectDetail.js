@@ -5,7 +5,7 @@ import projects from '../../data/projects.json';
 const norm = (s) => String(s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
 const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const EASE = 'cubic-bezier(.22,1,.36,1)';
-const SOCIALS = [['Instagram', 'https://www.instagram.com/yaswanthveer.k/'], ['X', 'https://x.com/YaswanthVeer1']];
+const SOCIALS = [['Instagram', 'https://www.instagram.com/yaswanthveer.k_/'], ['X', 'https://x.com/YaswanthVeer1']];
 const FOLDER = '<svg class="pd-folder" viewBox="0 0 56 48" aria-hidden="true"><path d="M2 8a6 6 0 0 1 6-6h13l6 6h21a6 6 0 0 1 6 6v26a6 6 0 0 1-6 6H8a6 6 0 0 1-6-6z" fill="#1e88e5"/><path d="M2 16h52v24a6 6 0 0 1-6 6H8a6 6 0 0 1-6-6z" fill="#42a5f5"/></svg>';
 
 export function findProject(name) {
